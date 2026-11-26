@@ -19,8 +19,9 @@ pub fn compile_real_site() -> String {
     html_builder
         .head(head_builder)
         .body(|body| {
-            let facade = body_builder(body, BodyType::Facade);
-            body_builder(facade, BodyType::RealSite)
+            svg_transition(body);
+            body_builder(body, BodyType::Facade);
+            body_builder(body, BodyType::RealSite)
             }
             );
     html_builder.build().to_string()
@@ -51,6 +52,7 @@ fn body_builder(body: &mut BodyBuilder, body_type: BodyType) -> &mut BodyBuilder
         .division(|div| 
             div
                 .class(format!("bg {}", body_type.value()))
+                .id(format!("{}", body_type.value()))
 
                 /*== MAIN CONTENT BOX  ==*/
                 .division(|div| {
@@ -207,6 +209,9 @@ fn code_box(body_type: BodyType) -> DivisionBuilder {
     let class = _built.class().unwrap_or_default();
     content_box.class(format!("{class} code")); 
     content_box
+}
+fn svg_transition(body: &mut BodyBuilder) -> &mut BodyBuilder {
+    body.text("<svg width=\"0\" height=\"0\" xmlns=\"http://www.w3.org/2000/svg\" ><clipPath id=\"circle-mask\" clipPathUnits=\"objectBoundingBox\"><circle r=\"1\" cx=\"0.5\" cy=\"0.5\" id=\"circle\"/></clipPath></svg>")
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]

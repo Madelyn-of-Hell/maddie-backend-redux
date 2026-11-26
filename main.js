@@ -41,6 +41,16 @@ function update_position() {
     let curr_y = Number(root.style.getPropertyValue('--mouse-y').slice(0,-2))
     root.style.setProperty('--mouse-x', `${curr_x + (target_x - curr_x)*0.05}px`)
     root.style.setProperty('--mouse-y', `${curr_y + (target_y - curr_y)*0.05}px`)
+
+    const circle = document.getElementById("circle")
+        if (circle.r.baseVal.value > 0) {
+            circle.r.baseVal.value -= 0.01
+        } else {
+            const a = document.getElementById("facade")
+            if (a != null) {
+                a.remove()
+            }
+        }
 }
 setInterval(
     update_position,
