@@ -1,6 +1,18 @@
-use html::{HtmlElement, Render, content::{Heading1, Heading2, Heading3}, inline_text::{Anchor, Span, builders::{AnchorBuilder, SpanBuilder}}, metadata::{Head, Link, Title, builders::HeadBuilder}, root::{Body, Html, builders::BodyBuilder}, text_content::{Division, builders::DivisionBuilder, children::DivisionChild}};
+use std::fs;
+
+use html::inline_text::{Anchor, Span};
+use html::inline_text::builders::AnchorBuilder;
+use html::metadata::builders::HeadBuilder;
+use html::root::Html;
+use html::root::builders::BodyBuilder;
+use html::text_content::Division;
+use html::text_content::builders::DivisionBuilder;
+
+use crate::BodyType::{Facade, RealSite};
+
 fn main() {
-    println!("{}", compile_facade())
+    fs::write("facade_progress.html", compile_facade()).unwrap();
+    fs::write("real_progress.html", compile_real_site()).unwrap();
 }
 fn compile_facade() -> String {
     let mut html_builder = Html::builder();
@@ -73,15 +85,41 @@ fn body_builder(body: &mut BodyBuilder, body_type: BodyType) -> &mut BodyBuilder
                         }).build());
 
                         /*== CHALLENGE ==*/
-                        div.push(
-                            left_box(body_type)
-                                .id("challenge-box")
-                                .text("PLACEHOLDER")
-                                .build()
-                        );
+                        let mut challenge_box = left_box(body_type);
+
+                        match body_type {
+                            Facade => {
+                                challenge_box.paragraph(|p| p
+                                    .text("There's not much here... <br> I wonder if you could do <br> something about that?")
+                                    .style("text-wrap: nowrap")
+                                    );
+                                challenge_box.push(
+                                    code_box(body_type).text("U2V0IGNvb2tpZSAndGhvc2Ugd2hvIGtub3cnIHRvICdtZWVlIDozJw==").build()
+                                );}
+                            RealSite => {
+                                challenge_box.paragraph(|p| p.text( "Hey, I knew you <br> could do it!").style("text-wrap: nowrap") );
+                            }
+                        }
+
+                        div.push(challenge_box.build());
+                        
+
                         div.paragraph(|p|p).paragraph(|p|p);
+
                         /*== EMAIL ==*/
-                        div.division(|div| div.id("email"));
+                        if body_type == RealSite {  
+                            let mut email = right_box(body_type);
+                            
+                            email
+                                .heading_2(|h2| h2.text("Contact Maddie"))
+                                .anchor(|a| a
+                                    .class("url")
+                                    .text("maddie_bl@protonmail.com")
+                                    .href("mailto:maddie_bl@protonmail.com")
+                            );
+                            div.push(email.build());
+                        }
+
                         /*== FRIEND BOXES ==*/
                         let mut friend_box = left_box(body_type);
                         friend_box
@@ -132,10 +170,10 @@ fn friend_button(src: &'static str, href: &'static str, friend_name: &'static st
     let mut a = Anchor::builder();
     a
         .href(href)
-        .image(|img| img
         .class("friend-button")
-        .src(src)
-        .alt(format!("{friend_name}'s 88x31 button"))
+        .image(|img| img
+            .src(src)
+            .alt(format!("{friend_name}'s 88x31 button"))
     );
     a
 }
@@ -152,7 +190,6 @@ fn left_box(body_type: BodyType) -> DivisionBuilder {
     content_box.class(format!("left-box {class}"));
     content_box
 }
-
 fn right_box(body_type: BodyType) -> DivisionBuilder {
     let mut content_box = content_box(body_type);
     let _built = content_box.build();
@@ -160,11 +197,26 @@ fn right_box(body_type: BodyType) -> DivisionBuilder {
     content_box.class(format!("right-box {class}")); 
     content_box
 }
+fn code_box(body_type: BodyType) -> DivisionBuilder {
+    let mut content_box = content_box(body_type);
+    let _built = content_box.build();
+    let class = _built.class().unwrap_or_default();
+    content_box.class(format!("{class} code")); 
+    content_box
+}
 fn compile_real_site() -> String {
-    String::new()
+    let mut html_builder = Html::builder();
+    html_builder
+        .head(head_builder)
+        .body(|body| {
+            let facade = body_builder(body, BodyType::Facade);
+            body_builder(facade, BodyType::RealSite)
+            }
+            );
+    html_builder.build().to_string()
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 enum BodyType {
     Facade,
     RealSite

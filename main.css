@@ -109,6 +109,9 @@ body {
 }
 .pfp.real-site {
     background-image: url("files/Normal Round.png");
+    background-size: cover;
+    width: 256px;
+    height:256px
 }
 .pfp.facade:hover {
     background-size: cover;
@@ -126,11 +129,11 @@ body {
 }
 .right-box {
     margin-left:50%;
-    width:min-content;
+    max-width:min-content;
     text-wrap: pretty;
 }
 .left-box {
-    width:min-content;
+    max-width:min-content;
     text-wrap: pretty;
 }
 
