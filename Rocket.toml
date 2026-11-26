@@ -1,0 +1,3 @@
+[global.tls]
+certs = "ssl/ssl-cert.pem"
+key = "ssl/ssl-key.pem"
