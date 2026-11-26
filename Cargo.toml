@@ -1,0 +1,7 @@
+[package]
+name = "maddie-backend-redux"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+html = "0.6.3"
