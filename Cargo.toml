@@ -5,3 +5,4 @@ edition = "2024"
 
 [dependencies]
 html = "0.6.3"
+rocket = "0.5.4"

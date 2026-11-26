@@ -92,7 +92,7 @@ fn body_builder(body: &mut BodyBuilder, body_type: BodyType) -> &mut BodyBuilder
                         let mut challenge_box = left_box(body_type);
 
                         match body_type {
-                            Facade => {
+                            BodyType::Facade => {
                                 challenge_box.paragraph(|p| p
                                     .text("There's not much here... <br> I wonder if you could do <br> something about that?")
                                     .style("text-wrap: nowrap")
@@ -100,7 +100,7 @@ fn body_builder(body: &mut BodyBuilder, body_type: BodyType) -> &mut BodyBuilder
                                 challenge_box.push(
                                     code_box(body_type).text("U2V0IGNvb2tpZSAndGhvc2Ugd2hvIGtub3cnIHRvICdtZWVlIDozJw==").build()
                                 );}
-                            RealSite => {
+                            BodyType::RealSite => {
                                 challenge_box.paragraph(|p| p.text( "Hey, I knew you <br> could do it!").style("text-wrap: nowrap") );
                             }
                         }
@@ -111,7 +111,7 @@ fn body_builder(body: &mut BodyBuilder, body_type: BodyType) -> &mut BodyBuilder
                         div.paragraph(|p|p).paragraph(|p|p);
 
                         /*== EMAIL ==*/
-                        if body_type == RealSite {  
+                        if body_type == BodyType::RealSite {  
                             let mut email = right_box(body_type);
                             
                             email
